@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Vase Drawing App</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      p {
+        text-align: center;
+      }
+
+      canvas {
+        display: block;
+        margin: auto;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vase Drawing App</h1>
+    <p>Draw the vase as accurately as possible!</p>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <br>
+    <button id="evaluateButton">Evaluate</button>
+    <br>
+    <p id="score"></p>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const context = canvas.getContext("2d");
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      // draw the vase
+      context.beginPath();
+      context.moveTo(100, 100);
+      context.lineTo(150, 50);
+      context.lineTo(200, 100);
+      context.lineTo(200, 200);
+      context.lineTo(100, 200);
+      context.closePath();
+      context.stroke();
+
+      // track user's drawing
+      canvas.addEventListener("mousedown", startDrawing);
+      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("mouseup", stopDrawing);
+
+      function startDrawing(e) {
+        isDrawing = true;
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        context.beginPath();
+        context.moveTo(lastX, lastY);
+        context.lineTo(e.offsetX, e.offsetY);
+        context.stroke();
+        lastX = e.offsetX;
+        lastY = e.offsetY;
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+      }
+
+      // evaluate user's drawing
+      document.getElementById("evaluateButton").addEventListener("click", function() {
+        const vaseData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        let blackPixels = 0;
+        for (let i = 0; i < vaseData.length; i += 4) {
+          // check if pixel is black
+          if (vaseData[i] === 0 && vaseData[i + 1] === 0 && vaseData[i + 2] === 0 && vaseData[i + 3] === 255) {
+            blackPixels++;
+          }
+        }
+        const accuracy = blackPixels / (canvas.width * canvas.height / 16);
+        const score = Math.floor(accuracy * 100);
+        document.getElementById("score").textContent = "Your score: " + score + "%";
+      });
+    </script>
+  </body>
+</html>
