@@ -1,31 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Vase Drawing App</title>
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-      }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
 
-      h1 {
-        text-align: center;
-      }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-top: 20px;
+            color: #333333;
+            text-shadow: 1px 1px 1px #d9d9d9;
+        }
 
-      p {
-        text-align: center;
-      }
+        p {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #333333;
+        }
 
-      canvas {
-        display: block;
-        margin: auto;
-        border: 1px solid black;
-      }
+        canvas {
+            display: block;
+            margin: auto;
+            border: 2px solid #333333;
+            border-radius: 10px;
+            box-shadow: 5px 5px 5px #d9d9d9;
+        }
+
+        button {
+            display: block;
+            margin: auto;
+            margin-top: 20px;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            background-color: #333333;
+            box-shadow: 3px 3px 3px #d9d9d9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #666666;
+            box-shadow: none;
+        }
+
+        #score {
+            text-align: center;
+            font-size: 2em;
+            margin-top: 20px;
+            color: #333333;
+            text-shadow: 1px 1px 1px #d9d9d9;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <h1>Vase Drawing App</h1>
     <p>Draw the vase as accurately as possible!</p>
     <canvas id="canvas" width="400" height="400"></canvas>
@@ -34,61 +72,61 @@
     <br>
     <p id="score"></p>
     <script>
-      const canvas = document.getElementById("canvas");
-      const context = canvas.getContext("2d");
-      let isDrawing = false;
-      let lastX = 0;
-      let lastY = 0;
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext("2d");
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
 
-      // draw the vase
-      context.beginPath();
-      context.moveTo(100, 100);
-      context.lineTo(150, 50);
-      context.lineTo(200, 100);
-      context.lineTo(200, 200);
-      context.lineTo(100, 200);
-      context.closePath();
-      context.stroke();
-
-      // track user's drawing
-      canvas.addEventListener("mousedown", startDrawing);
-      canvas.addEventListener("mousemove", draw);
-      canvas.addEventListener("mouseup", stopDrawing);
-
-      function startDrawing(e) {
-        isDrawing = true;
-        lastX = e.offsetX;
-        lastY = e.offsetY;
-      }
-
-      function draw(e) {
-        if (!isDrawing) return;
+        // draw the vase
         context.beginPath();
-        context.moveTo(lastX, lastY);
-        context.lineTo(e.offsetX, e.offsetY);
+        context.moveTo(100, 100);
+        context.lineTo(150, 50);
+        context.lineTo(200, 100);
+        context.lineTo(200, 200);
+        context.lineTo(100, 200);
+        context.closePath();
         context.stroke();
-        lastX = e.offsetX;
-        lastY = e.offsetY;
-      }
 
-      function stopDrawing() {
-        isDrawing = false;
-      }
+        // track user's drawing
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseup", stopDrawing);
 
-      // evaluate user's drawing
-      document.getElementById("evaluateButton").addEventListener("click", function() {
-        const vaseData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-        let blackPixels = 0;
-        for (let i = 0; i < vaseData.length; i += 4) {
-          // check if pixel is black
-          if (vaseData[i] === 0 && vaseData[i + 1] === 0 && vaseData[i + 2] === 0 && vaseData[i + 3] === 255) {
-            blackPixels++;
-          }
+        function startDrawing(e) {
+            isDrawing = true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
         }
-        const accuracy = blackPixels / (canvas.width * canvas.height / 16);
-        const score = Math.floor(accuracy * 100);
-        document.getElementById("score").textContent = "Your score: " + score + "%";
-      });
+
+        function draw(e) {
+            if (!isDrawing) return;
+            context.beginPath();
+            context.moveTo(lastX, lastY);
+            context.lineTo(e.offsetX, e.offsetY);
+            context.stroke();
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        // evaluate user's drawing
+        document.getElementById("evaluateButton").addEventListener("click", function () {
+            const vaseData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+            let blackPixels = 0;
+            for (let i = 0; i < vaseData.length; i += 4) {
+                // check if pixel is black
+                if (vaseData[i] === 0 && vaseData[i + 1] === 0 && vaseData[i + 2] === 0 && vaseData[i + 3] === 255) {
+                    blackPixels++;
+                }
+            }
+            const accuracy = blackPixels / (canvas.width * canvas.height / 16);
+            const score = Math.floor(accuracy * 100);
+            document.getElementById("score").textContent = "Your score: " + score + "%";
+        });
     </script>
-  </body>
+</body>
 </html>
